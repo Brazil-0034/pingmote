@@ -5,57 +5,51 @@ Motivation: *Poor Man's Discord Nitro*
 
 
 # Demo
-![pingmote demo](https://user-images.githubusercontent.com/37674516/107857226-1e72f000-6dfb-11eb-8a9a-e938368b65bc.gif)
+![pingmote demo](https://user-images.githubusercontent.com/37674516/113481499-eafe2a80-9467-11eb-886c-3bd7981f1add.gif)
+
 
 # How It Works
-All images/gifs (properly sized) are stored in `assets/resized`. These images are shown in the GUI, and clicking on them copies the corresponding URL to clipboard (with options to auto-paste). The URLs are stored in `links.txt`.
+- Since Discord autoembeds images, we can paste in links to custom emotes
+- The emote picker is written in Python with [PySimpleGUI](https://github.com/PySimpleGUI/PySimpleGUI), with global hotkeys for activation (using [keyboard](https://github.com/boppreh/keyboard))
 
 # Getting Started
-- Clone this repo: `git clone https://github.com/dchen327/pingmote.git` or download the code as a zip and extract
+- Clone this repo: `git clone https://github.com/dchen327/pingmote.git` or download as a zip and extract
 - Change into the pingmote directory (make sure you can see `pingmote.py`)
-- Run `pip install -r requirements.txt` to install all necessary dependencies (use `pip3` if needed)
+- Run `pip install -r requirements.txt` to install dependencies (`pip3` if needed)
 
 # Usage
-Running `python pingmote.py` (or `python3 pingmote.py`) will start the script, and when you hit the shortcut specified at the top of `pingmote.py` (default `<alt>+w`), the emote picker will show up, allowing you to click and pick an emote to insert.
+- Running `python3 pingmote.py` (Mac and Linux: `sudo python3 pingmote.py`) starts the script, and when you hit the hotkey at the top of `config.py` (default `ctrl+q`), the emote picker will show up, allowing you to click an emote to insert
+- Hit the hotkey again to toggle the GUI, and drag the GUI somewhere convenient
+
+# Configs
+- Check `config.py` for configs
 
 # Adding Your Own Emotes
 - Sorry for this being a bit complicated, I'm working on simplifying the workflow
-- Drop image files in the `original` folder, then run `image_resizer.py` which will resize all the images (ignoring gifs) and drop them in the `resized` folder
-- Unfortunately, `image_resizer.py` is currently unable to resize gifs, so a website like [this](https://www.iloveimg.com/resize-image/resize-gif) is useful (although you can only resize like 12 max at a time). After downloading the resized gifs (64x64), extract them to the `original` folder in assets, then run `image_resizer.py` to create the resized folder while ignoring gifs
-- Upload all files to an image hoster (I like [postimages](https://postimages.org/)). Copy all the direct image links (ending in the file extension) and paste them in `links.txt`
-- Imgur will not work in the current implementation, since imgur links do not contain the original filename
-- Here are some good emote sources (right click save image): [discordmojis.com](https://discordmojis.com/), [emoji.gg](https://emoji.gg/)
-
-# Configs
-- Check the top of `pingmote.py` for configs
-
-# Dependencies
-These can be installed with `pip install -r requirements.txt`
-
-- PySimpleGUI (to display the image picker GUI)
-- pynput (getting mouse position and keyboard commands)
-- pyperclip (copy pasting)
-- PIL (for running `image_resizer.py`)
-
-## For Mac:
-There seems to be some weird Mac GUI errors with Tkinter (testing soon)
+- Drop files in `assets/original`, then run `image_resizer.py` which will resize all the images (ignoring gifs) and drop them in `assets/resized`
+- Gif resizing (disabled by default) requires `gifsicle`, but a website like [ezgif](https://ezgif.com/resize) also works
+- Resize gifs to 64x64 and drop them in `assets/original` (they'll be ignored when the resizer is run)
+- Upload files from `assets/resized` to an image hoster (I like [postimages](https://postimages.org/)). Copy the direct image links (ending in file extension) and paste in `links.txt`
+- A simpler alternative using GitHub: fork this repo and push your images, then drop your forked repo's URL in config.py (GITHUB_URL). This method doesn't require alternate hosting or `links.txt`
+- Note: Imgur doesn't work currently, since Imgur links don't contain the original filename
+- Some emote sources (right click > save image): [discordmojis.com](https://discordmojis.com/), [emoji.gg](https://emoji.gg/), [discord.st](https://discord.st/emojis/)
 
 # Notes
-- Since this program relies on pasting image/gif URLs as emotes, we can't use inline emotes or reacts.
-- Images have slight padding in discord, so they don't look *exactly* the same as regular emotes
-- Pretty much only Discord works (Facebook Messenger and Slack don't)
-- In addition, Facebook and Slack don't look good when images are directly pasted in either
+- Since this program relies on autoembedding, we can't use inline emotes or reacts
+- Pretty much only Discord works (Facebook Messenger and Slack make embeds ugly)
+- On Windows, renaming the file extension to `pingmote.pyw` allows for running the script in the background, and then it can be dropped into shell:startup
+- Windows should work out of the box, Mac and Linux may require jumping through some hoops
+- The Apple M1 chip is currently unsupported (bus error)
+- On Linux, if you get the error `KeyError: 'XDG_SESSION_TYPE'`, set the environment variable by running
+  > `sudo XDG_SESSION_TYPE=x11 python3 pingmote.py`
 
 # TODOs
-- Testing on Mac (current issue: pynput permissions and ctrl/alt detection broken, GUI seems fine on Python 3.9)
-- Testing on Windows (current issue: pynput being inconsistent, might be because of threading and GUI conflicts)
 - Better ordering of emotes (categorization, etc.)
+- Simplify install process
 - Simplify the process for adding new emotes
-- Gif resizing? (idk PIL isn't very good for this)
+- Emote deletion in GUI
 - Ensure gif thumbnail isn't blank (not fully sure how to do this)
 - Search emotes by keyword (would require files to be named, since most of my files now are just a bunch of numbers)
-- Some hybrid mode for linux/mac that pastes local images and uses hosted gif links
-- Non-destructive pasting (store clipboard contents)
 
 # Reasons you should still buy Discord Nitro
 - Support Discord!
@@ -78,6 +72,9 @@ There seems to be some weird Mac GUI errors with Tkinter (testing soon)
 - Cleaned up links for better file to link mapping
 - Switched to `pynput` for cross-platform global hotkey mapping, fully removed PyAutoGUI dependencies
 - Added section labels and ability to separate images and gifs
+- Switched to `keyboard` from `pynput` to fix hotkey blocking behavior (after 3 weeks of zero progress)
+- Cleaned up `image_resizer.py`
+- Shifted configs to separate file
 
 # License
 [MIT License](https://github.com/dchen327/pingmote/blob/master/LICENSE.md)
